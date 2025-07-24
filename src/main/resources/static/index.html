@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🐌 Async Task Viewer</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoYz1FQGP1N9vvM0v1z2DxFAU+efVRSCYzJtEzv+7CXvNw3"
+            crossorigin="anonymous"
+    >
+
+    <!-- Material Design for Bootstrap -->
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css"
+            rel="stylesheet"
+    />
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        canvas#graph-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        .interactive-ant {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .interactive-ant:hover {
+            transform: scale(1.3) rotate(10deg);
+        }
+    </style>
+</head>
+<body class="bg-light py-5">
+<canvas id="graph-bg"></canvas>
+<div class="container">
+    <header class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary d-flex justify-content-center align-items-center gap-2">
+            Hedera
+            <img src="https://as2.ftcdn.net/v2/jpg/00/74/85/15/1000_F_74851599_oFtj5xO89cCq0djY5WbA0VDixzyHS6F7.jpg"
+                 alt="ant" class="interactive-ant"/>
+        </h1>
+        <h2 class="mb-4 text-secondary">Find Relation (Async)</h2>
+        <button class="btn btn-outline-info btn-sm" onclick="showAbout()">About</button>
+    </header>
+
+    <form id="relationForm" class="card p-4 shadow-3">
+        <div class="form-outline mb-3">
+            <input type="text" name="sourceAccountId" id="sourceAccountId" class="form-control" required/>
+            <label class="form-label" for="sourceAccountId">Source Account ID</label>
+        </div>
+        <div class="form-outline mb-3">
+            <input type="text" name="targetAccountId" id="targetAccountId" class="form-control" required/>
+            <label class="form-label" for="targetAccountId">Target Account ID</label>
+        </div>
+        <div class="form-outline mb-3">
+            <input type="number" name="antCount" id="antCount" class="form-control" value="500" min="1"/>
+            <label class="form-label" for="antCount">Ant Count</label>
+        </div>
+        <div class="form-outline mb-3">
+            <input type="number" name="waves" id="waves" class="form-control" value="4" min="1"/>
+            <label class="form-label" for="waves">Waves</label>
+        </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="true" id="extendedResponse" name="extendedResponse"/>
+            <label class="form-check-label" for="extendedResponse">
+                Extended response
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Start Task</button>
+    </form>
+
+    <div class="card p-4 mt-4 shadow-3 d-none" id="statusContainer">
+        <h5 class="text-info">Status</h5>
+        <div id="loadingSpinner" class="spinner-border text-primary" role="status" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mb-0" id="statusText"></p>
+    </div>
+
+    <div class="card p-4 mt-4 shadow-3 d-none" id="resultContainer">
+        <h5 class="text-success">Task Result</h5>
+        <pre id="resultData" class="bg-light p-3 border rounded"></pre>
+    </div>
+</div>
+
+<!-- About Modal -->
+<div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aboutModalLabel">About Hedera Relations</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="aboutContent">
+                Loading...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MDB + Bootstrap JS -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const form = document.getElementById("relationForm");
+    const statusContainer = document.getElementById("statusContainer");
+    const statusText = document.getElementById("statusText");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+    const resultContainer = document.getElementById("resultContainer");
+    const resultData = document.getElementById("resultData");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        resultContainer.classList.add("d-none");
+        statusContainer.classList.remove("d-none");
+        loadingSpinner.style.display = "inline-block";
+        statusText.textContent = "Submitting...";
+
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        for (const pair of formData.entries()) {
+            params.append(pair[0], pair[1]);
+        }
+
+        const response = await fetch("/relation/async", {
+            method: "POST",
+            body: params
+        });
+
+        const hillId = await response.text();
+        checkStatus(hillId);
+    });
+
+    async function checkStatus(hillId) {
+        statusText.textContent = "Processing...";
+        loadingSpinner.style.display = "inline-block";
+
+        const poll = async () => {
+            const response = await fetch(`/relation/async/status?hillId=${hillId}`, {method: "POST"});
+            const {status} = await response.json();
+
+            statusText.textContent = status;
+
+            if (status === "COMPLETED") {
+                loadingSpinner.style.display = "none";
+                fetchResult(hillId);
+            } else if (status === "FAILED") {
+                loadingSpinner.style.display = "none";
+                statusText.textContent = "Task failed.";
+            } else {
+                setTimeout(() => poll(), 2000);
+            }
+        };
+        poll();
+    }
+
+    async function fetchResult(hillId) {
+        const extended = document.getElementById("extendedResponse").checked;
+        const response = await fetch(`/relation/async/result?hillId=${hillId}&extended=${extended}`);
+        const data = await response.json();
+        resultData.textContent = JSON.stringify(data, null, 2);
+        resultContainer.classList.remove("d-none");
+    }
+
+    async function showAbout() {
+        const modal = new bootstrap.Modal(document.getElementById('aboutModal'));
+        const content = document.getElementById("aboutContent");
+        content.textContent = "Loading...";
+
+        const response = await fetch("/system/info");
+        const data = await response.json();
+
+        content.innerHTML = `
+  <strong>Version:</strong> ${data.VERSION || "0.1.0"}<br/>
+  <strong>Name:</strong> ${data.NAME || "Hedera Relations"}<br/>
+  <strong>Description:</strong><br/>
+  <div style="white-space: pre-wrap; font-family: monospace; background-color: #f8f9fa; padding: 10px; border-radius: 5px;">
+    ${data.DESCRIPTION || ""}
+  </div>
+  <strong>Time From:</strong> ${data.timeFrom}<br/>
+  <strong>Time To:</strong> ${data.timeTo}<br/>
+  <strong>Accounts Processed:</strong> ${data.accountsProcessed}<br/>
+  <strong>Transactions Processed:</strong> ${data.transactionsProcessed}<br/>
+  <strong>Storage Available:</strong> ${data.storageAvailable ? "Yes" : "No"}
+`;
+
+
+        modal.show();
+    }
+
+    const canvas = document.getElementById('graph-bg');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let points = [];
+
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        generatePoints();
+    }
+
+    function generatePoints() {
+        points = [];
+        for (let i = 0; i < 100; i++) {
+            points.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5
+            });
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let p of points) {
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < 0 || p.x > width) p.vx *= -1;
+            if (p.y < 0 || p.y > height) p.vy *= -1;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#2f80ed';
+            ctx.fill();
+
+            for (let q of points) {
+                const dx = p.x - q.x;
+                const dy = p.y - q.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(q.x, q.y);
+                    ctx.strokeStyle = 'rgba(47, 128, 237, 0.2)';
+                    ctx.stroke();
+                }
+            }
+        }
+
+        requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    draw();
+</script>
+</body>
+</html>

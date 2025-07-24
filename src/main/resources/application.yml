@@ -1,0 +1,48 @@
+server:
+  port: 8081
+
+sicknet.hedera:
+  tokens:
+    - token_id: 0.0.0
+      name: HBAR Native Token
+      symbol: HBAR
+  configuration:
+    homeDir: D:\dev\hederaScraperHome\sub-home
+    metaFileName: meta_info.json
+    accountsGraphFileName: accounts_graph.bin
+  system.accounts:
+    - 0.0.2	  #Hedera treasury account (holds HBAR)
+    - 0.0.98	  #Fee collection / node reward account
+    - 0.0.800  #Possibly another reward/fee distribution account
+    - 0.0.57	  #Fee schedule management
+    - 0.0.56	  #Exchange rate oracle
+    - 0.0.55      #Treasury Account
+    - 0.0.3	      #Swirlds Labs (Hedera Core Team)	USA
+    - 0.0.4	      #IBM	USA
+    - 0.0.5	      #LG Electronics	South Korea
+    - 0.0.6	      #Tata Communications	India
+    - 0.0.7	      #Boeing	USA
+    - 0.0.8	      #Deutsche Telekom	Germany
+    - 0.0.9	      #DLA Piper	UK
+    - 0.0.10	  #FIS (Worldpay)	USA
+    - 0.0.11	  #Google Cloud	USA
+    - 0.0.12	  #Nomura Holdings	Japan
+    - 0.0.13	  #Magalu (Magazine Luiza)	Brazil
+    - 0.0.14	  #Standard Bank	South Africa
+    - 0.0.15	  #Ubisoft	France
+    - 0.0.16	  #University College London	UK
+    - 0.0.17	  #Wipro	India
+    - 0.0.18	  #ServiceNow	USA
+    - 0.0.19	  #EDF (Electricité de France)	France
+    - 0.0.20	  #Shinhan Bank	South Korea
+    - 0.0.21	  #Chainlink Labs	Switzerland
+    - 0.0.22	  #COFRA Holding	Switzerland
+    - 0.0.23	  #Dell	USA
+    - 0.0.24	  #abrdn	UK
+    - 0.0.25	  #Indian Institute of Technology Madras	India
+    - 0.0.26	  #Archax	UK
+    - 0.0.27	  #ANZ Bank	Australia
+    - 0.0.28	  #Hitachi	Japan
+    - 0.0.29	  #The London School of Economics	UK
+    - 0.0.30	  #Hyundai	South Korea
+    - 0.0.32
