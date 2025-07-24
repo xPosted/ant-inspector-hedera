@@ -2,12 +2,8 @@ package com.sicknet.hedera.relations.service.tokens;
 
 import com.sicknet.hedera.relations.configuration.ConfigProperties;
 import com.sicknet.hedera.relations.dto.TokenInfoOperationDto;
-import com.sicknet.hedera.relations.dto.integration.TokenDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.HashSet;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class TokeInfoLocalDataSource implements TokenInfoDataSource {

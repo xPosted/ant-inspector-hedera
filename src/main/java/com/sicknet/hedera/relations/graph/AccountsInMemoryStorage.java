@@ -2,7 +2,8 @@ package com.sicknet.hedera.relations.graph;
 
 import com.sicknet.hedera.relations.dto.TransactionDto;
 import com.sicknet.hedera.relations.dto.TransferInfo;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;

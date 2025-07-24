@@ -1,9 +1,9 @@
 package com.sicknet.hedera.relations.service;
 
 import com.sicknet.hedera.relations.ants.HederaAntHill;
+import com.sicknet.hedera.relations.dto.integration.TokenDto;
 import com.sicknet.hedera.relations.dto.web.HillJobStatus;
 import com.sicknet.hedera.relations.dto.web.JobStatusEnum;
-import com.sicknet.hedera.relations.dto.integration.TokenDto;
 import com.sicknet.hedera.relations.dto.web.RelationResult;
 import com.sicknet.hedera.relations.dto.web.SystemInfo;
 import com.sicknet.hedera.relations.graph.Account;

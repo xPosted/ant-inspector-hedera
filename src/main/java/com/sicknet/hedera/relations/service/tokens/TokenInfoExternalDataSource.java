@@ -4,7 +4,6 @@ import com.sicknet.hedera.relations.dto.TokenInfoOperationDto;
 import com.sicknet.hedera.relations.dto.integration.TokenDto;
 import com.sicknet.hedera.relations.dto.integration.TokenResponseDto;
 import com.sicknet.hedera.relations.integration.HederaTokenClient;
-import com.sicknet.hedera.relations.service.HederaTokenService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

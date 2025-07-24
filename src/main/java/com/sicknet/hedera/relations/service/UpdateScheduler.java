@@ -1,7 +1,6 @@
 package com.sicknet.hedera.relations.service;
 
 import com.sicknet.hedera.relations.configuration.ConfigProperties;
-import com.sicknet.hedera.relations.graph.AccountsInMemoryStorage;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

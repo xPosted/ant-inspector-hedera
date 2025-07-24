@@ -1,7 +1,6 @@
 package com.sicknet.hedera.relations.configuration;
 
 import com.sicknet.hedera.relations.dto.integration.TokenDto;
-import com.sicknet.hedera.relations.dto.integration.TokenResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;

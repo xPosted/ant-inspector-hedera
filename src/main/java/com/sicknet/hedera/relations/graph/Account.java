@@ -2,13 +2,12 @@ package com.sicknet.hedera.relations.graph;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sicknet.hedera.relations.dto.TransferInfo;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Value
