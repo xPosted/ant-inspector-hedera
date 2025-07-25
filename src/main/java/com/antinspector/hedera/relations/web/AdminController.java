@@ -1,18 +1,17 @@
 package com.antinspector.hedera.relations.web;
 
-import com.antinspector.hedera.relations.dto.web.HillJobStatus;
-import com.antinspector.hedera.relations.dto.web.SystemInfo;
+import com.antinspector.hedera.relations.dto.web.GetRelationsAsyncResponse;
+import com.antinspector.hedera.relations.dto.web.HillJobStatusResponse;
+import com.antinspector.hedera.relations.dto.web.SystemInfoResponse;
 import com.antinspector.hedera.relations.graph.Account;
 import com.antinspector.hedera.relations.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
-@RestController("/hedera")
+@RestController()
+@RequestMapping("/hedera")
 public class AdminController {
 
     @Autowired
@@ -23,7 +22,7 @@ public class AdminController {
         return accountService.getAccountById(accountId);
     }
 
-    @PostMapping("/relation")
+    @PostMapping("/sync/ant/run")
     public Set getRelations(@RequestParam("sourceAccountId") String sourceAccountId,
                                           @RequestParam("targetAccountId") String targetAccountId,
                                           @RequestParam(value = "antCount", defaultValue = "500") int antCount,
@@ -32,27 +31,27 @@ public class AdminController {
         return accountService.findRelations(sourceAccountId, targetAccountId, antCount, waves, extended);
     }
 
-    @PostMapping("/relation/async")
-    public String getRelationsAsync(@RequestParam("sourceAccountId") String sourceAccountId,
-                                    @RequestParam("targetAccountId") String targetAccountId,
-                                    @RequestParam(value = "antCount", defaultValue = "500") int antCount,
-                                    @RequestParam(value = "waves", defaultValue = "4") int waves) {
+    @PostMapping("/async/ant/run")
+    public GetRelationsAsyncResponse getRelationsAsync(@RequestParam("sourceAccountId") String sourceAccountId,
+                                                       @RequestParam("targetAccountId") String targetAccountId,
+                                                       @RequestParam(value = "antCount", defaultValue = "500") int antCount,
+                                                       @RequestParam(value = "waves", defaultValue = "4") int waves) {
         return accountService.findRelationAsync(sourceAccountId, targetAccountId, antCount, waves);
     }
 
-    @PostMapping("/relation/async/status")
-    public HillJobStatus getHillJobStatus(@RequestParam("hillId") String hillId) {
+    @PostMapping("/async/ant/status")
+    public HillJobStatusResponse getHillJobStatus(@RequestParam("hillId") String hillId) {
         return accountService.getJobStatus(hillId);
     }
 
-    @GetMapping("/relation/async/result")
+    @GetMapping("/async/ant/result")
     public Set getJobResult(@RequestParam("hillId") String hillId,
                                           @RequestParam(value = "extended", defaultValue = "false") boolean extended) {
        return accountService.getJobResult(hillId, extended);
     }
 
-    @GetMapping("/system/info")
-    public SystemInfo getSystemInfo() {
+    @GetMapping("/about")
+    public SystemInfoResponse getSystemInfo() {
         return accountService.getSystemInfo();
     }
 

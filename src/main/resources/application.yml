@@ -1,5 +1,19 @@
 server:
-  port: 8081
+  port: 8080
+
+spring.application.name: ant-inspector
+
+springdoc:
+  group-configs:
+    - group: Asynchronous API
+      paths-to-match: /hedera/async/**
+    - group: Synchronous API
+      paths-to-match: /hedera/sync/**
+    - group: Account API
+      paths-to-match: /hedera/account**
+    - group: Common API
+      paths-to-match: /hedera/about**,/hedera/application/test**
+
 
 sicknet.hedera:
   tokens:
@@ -7,9 +21,8 @@ sicknet.hedera:
       name: HBAR Native Token
       symbol: HBAR
   configuration:
-    homeDir: D:\dev\hederaScraperHome\sub-home
+    homeDir: D:\dev\hederaScraperHome\
     metaFileName: meta_info.json
-    accountsGraphFileName: accounts_graph.bin
   system.accounts:
     - 0.0.2	  #Hedera treasury account (holds HBAR)
     - 0.0.98	  #Fee collection / node reward account

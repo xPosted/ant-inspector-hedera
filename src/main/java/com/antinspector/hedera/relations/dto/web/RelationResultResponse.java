@@ -8,7 +8,7 @@ import java.util.List;
 
 @Value
 @Builder
-public class RelationResult {
+public class RelationResultResponse {
     String source;
     String target;
     List<RelationItem> relations;

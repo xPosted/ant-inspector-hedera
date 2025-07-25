@@ -30,7 +30,7 @@ public class AccountsInMemoryStorage {
         this.fromTs = new AtomicLong(fromTs);
         this.toTs = new AtomicLong(toTs);
         this.systemAccounts = systemAccounts != null ? systemAccounts : Collections.emptyList();
-        this.accountEntityMap = new ConcurrentHashMap<>(8000000);
+        this.accountEntityMap = new ConcurrentHashMap<>(2000000);
         this.accountIds = new ArrayList<>();
 
     }
@@ -85,11 +85,11 @@ public class AccountsInMemoryStorage {
                     var account = Optional.ofNullable(acc).orElseGet(() -> Account.buildNew(senderAccId));
                     return account.addTransfer(transferInfo);
                 });
-        accountEntityMap.compute(receiverAccId,
-                (id, acc) -> {
-                    var account = Optional.ofNullable(acc).orElseGet(() -> Account.buildNew(receiverAccId));
-                    return account.addTransfer(transferInfo);
-                });
+//        accountEntityMap.compute(receiverAccId,
+//                (id, acc) -> {
+//                    var account = Optional.ofNullable(acc).orElseGet(() -> Account.buildNew(receiverAccId));
+//                    return account.addTransfer(transferInfo);
+//                });
     }
 
     private boolean validateTransfer(TransferInfo transfer) {

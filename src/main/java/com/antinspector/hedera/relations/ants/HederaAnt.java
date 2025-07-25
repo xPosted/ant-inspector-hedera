@@ -1,5 +1,6 @@
 package com.antinspector.hedera.relations.ants;
 
+import com.antinspector.hedera.relations.ants.exception.AccountNotFoundException;
 import com.antinspector.hedera.relations.ants.exception.NoAnyAvailableRelationsException;
 import com.antinspector.hedera.relations.graph.Account;
 import lombok.Builder;
@@ -18,12 +19,12 @@ public class HederaAnt {
     private final List<String> visitedAccounts;
     private final int pheromoneFactor;
     private final Function<String, Optional<Double>> pheromoneValueProvider;
-    private final Function<String, Account> accountProvider;
+    private final Function<String, Optional<Account>> accountProvider;
     private final Consumer<AntPath> resultConsumer;
 
     public HederaAnt(String sourceAccountId, String targetAccountId, int pheromoneFactor,
                      Function<String, Optional<Double>> pheromoneValueProvider,
-                     Function<String, Account> accountProvider,
+                     Function<String, Optional<Account>> accountProvider,
                      Consumer<AntPath> resultConsumer) {
         this.sourceAccountId = sourceAccountId;
         this.currentAccountId = sourceAccountId;
@@ -37,7 +38,7 @@ public class HederaAnt {
 
     public void findPath() {
         try {
-            while (!visitedAccounts.contains(targetAccountId)) {
+            while (!visitedAccounts.contains(targetAccountId) && visitedAccounts.size() < 150) {
                 var nextStep = findNextStep();
                 visitedAccounts.add(nextStep);
                 currentAccountId = nextStep;
@@ -49,15 +50,15 @@ public class HederaAnt {
                         .targetAccountId(targetAccountId)
                         .build());
             }
-        } catch (NoAnyAvailableRelationsException e) {
+        } catch (NoAnyAvailableRelationsException | AccountNotFoundException e) {
             // Handle the case where no relations are available
-    //        System.err.println("Ant has stucked on account: " + currentAccountId + ", "+visitedAccounts);
+            //        System.err.println("Ant has stucked on account: " + currentAccountId + ", "+visitedAccounts);
         }
 
     }
 
-    private String findNextStep() throws NoAnyAvailableRelationsException {
-        var acc = accountProvider.apply(currentAccountId);
+    private String findNextStep() throws NoAnyAvailableRelationsException, AccountNotFoundException {
+        var acc = accountProvider.apply(currentAccountId).orElseThrow(() -> new AccountNotFoundException(currentAccountId));
         if (acc.getDebitRelations().containsKey(targetAccountId)) {
             return targetAccountId;
         }

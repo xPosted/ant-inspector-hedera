@@ -15,7 +15,7 @@ import java.util.List;
 public class ConfigProperties {
 
     private List<TokenDto> tokens;
-    private HederaStorageConfig configuration;
+    private TransctionsFSStorageConfig configuration;
     private SystemConfig system;
 
     @Value
@@ -26,10 +26,9 @@ public class ConfigProperties {
 
     @Value
     @AllArgsConstructor
-    public static class HederaStorageConfig {
+    public static class TransctionsFSStorageConfig {
         String homeDir;
         String metaFileName;
-        String accountsGraphFileName;
     }
 
 }

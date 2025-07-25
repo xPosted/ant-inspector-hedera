@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class SystemInfo {
+public class SystemInfoResponse {
 
     @Builder.Default
     public final String VERSION = "0.1.0";
@@ -17,7 +17,7 @@ public class SystemInfo {
             " and this tool will try to find out 'many flow' between this two accounts. This tool is based on well known " +
             "'Ant algorithm' for finding relations on graph.";
     @Builder.Default
-    public final String GITHUB_URL = "";
+    public final String GITHUB_URL = "https://github.com/xPosted/ant-inspector-hedera";
     public String timeFrom;
     public String timeTo;
     public Integer accountsProcessed;

@@ -1,8 +1,10 @@
 package com.antinspector.hedera.relations.ants;
 
+import com.antinspector.hedera.relations.ants.exception.AccountNotFoundException;
 import com.antinspector.hedera.relations.graph.Account;
 import com.antinspector.hedera.relations.graph.AccountsInMemoryStorage;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -77,13 +79,8 @@ public class HederaAntHill {
         return Optional.ofNullable(pheromoneAcountMap.get(account));
     }
 
-    private Account getAccount(String accountId) {
-        return accountsMetaInfo
-                .getAccount(accountId)
-                .orElseGet(() -> {
-                    throw new IllegalArgumentException("Account not found: " + accountId);
-                });
+    private Optional<Account> getAccount(String accountId) {
+        return accountsMetaInfo.getAccount(accountId);
     }
-
 
 }

@@ -40,11 +40,13 @@ public class GraphBuilder {
         }
         try  {
             storageUpdateLock.lock();
+            log.info("Updating storage");
             var metaFilePath = String.format("%s/%s", homeDir, metaFileName);
             getNewTransactionsParts(metaFilePath).stream()
                     .filter(MetaInfoDto.TransactionsPart::isCompleted)
                     .forEach(transactionsPart -> readTransactionsPart(transactionsPart, homeDir));
             accountsMetaInfo.calculateTokenSummaries();
+            log.info("Storage updated");
         } finally {
             storageUpdateLock.unlock();
         }
@@ -57,9 +59,9 @@ public class GraphBuilder {
     }
 
     private void readTransactionsPart(MetaInfoDto.TransactionsPart transactionsPart, String homeDir) {
+        log.info("Found new transactions part: {}, updating storage", transactionsPart.getBasePath());
         getNewTransactionSubParts(transactionsPart).parallelStream().forEach(subPart -> readSubPart(subPart, transactionsPart.getBasePath(), homeDir));
     }
-
 
     private void addTransactions(List<TransactionDto> transactions, Long latestTs) {
         transactions.forEach(accountsMetaInfo::addTransaction);
