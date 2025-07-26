@@ -45,16 +45,4 @@ public class TransactionDto {
     @JsonProperty("valid_start_timestamp")
     private String validStartTimestamp;
 
-    // Getters and setters omitted for brevity
-
-    @Data
-    public static class TransferDto {
-        @JsonProperty("token_id")
-        private String tokenId;
-        private String account;
-        private long amount;
-        @JsonProperty("is_approval")
-        private boolean isApproval;
-
-    }
 }

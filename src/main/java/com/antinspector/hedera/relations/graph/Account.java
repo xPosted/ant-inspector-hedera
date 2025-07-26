@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,9 +24,9 @@ public class Account {
     public static Account buildNew(String accountId) {
         return Account.builder().accountId(accountId)
                 .debitRelations(new HashMap<>())
-                .creditRelations(new HashMap<>())
+                .creditRelations(Collections.emptyMap())
                 .debitTokenSummaries(new HashMap<>())
-                .creditTokenSummaries(new HashMap<>())
+                .creditTokenSummaries(Collections.emptyMap())
                 .build();
     }
 
@@ -87,7 +88,7 @@ public class Account {
 
     void runPostUpdateCalculations() {
         debitTokenSummaries.putAll(getTokenSummaries(debitRelations));
-        creditTokenSummaries.putAll(getTokenSummaries(creditRelations));
+  //      creditTokenSummaries.putAll(getTokenSummaries(creditRelations)); // Uncomment if credit relations are needed
     }
 
     private Map<String, TransactionsSummary> getTokenSummaries(Map<String, Map<String, TransactionsSummary>> relations) {

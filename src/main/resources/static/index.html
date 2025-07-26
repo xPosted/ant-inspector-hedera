@@ -313,14 +313,18 @@
             const data = await response.json();
 
             content.innerHTML = `
-          <strong>Version:</strong> ${data.VERSION || "0.1.0"}<br/>
-          <strong>Name:</strong> ${data.NAME || "Hedera Relations"}<br/>
+          <strong>Version:</strong> ${data.VERSION}<br/>
+          <strong>Name:</strong> ${data.NAME}<br/>
           <strong>Description:</strong><br/>
           <div style="white-space: pre-wrap; font-family: monospace; background-color: #f8f9fa; padding: 10px; border-radius: 5px;">
             ${data.DESCRIPTION || ""}
           </div>
-          <strong>Time From:</strong> ${data.timeFrom}<br/>
-          <strong>Time To:</strong> ${data.timeTo}<br/>
+          <strong>Contact Email:</strong> ${data.contactEmail}<br/>
+          <strong>Contact Phone:</strong> ${data.contactPhone}<br/>
+          <strong>Developed by:</strong> ${data.contactName}<br/>
+          <strong>Github URL:</strong> ${data.GITHUB_URL}<br/>
+          <strong>DB Ts From:</strong> ${data.timeFrom}<br/>
+          <strong>DB Ts To:</strong> ${data.timeTo}<br/>
           <strong>Accounts Processed:</strong> ${data.accountsProcessed}<br/>
           <strong>Transactions Processed:</strong> ${data.transactionsProcessed}<br/>
           <strong>Storage Available:</strong> ${data.storageAvailable ? "Yes" : "No"}

@@ -55,7 +55,7 @@ public class GraphBuilder {
     private void readSubPart(MetaInfoDto.TransactionsSubPart subPart, String baseDir, String homeDir) {
         String pathToFile = String.format("%s/%s/%s", homeDir, baseDir, subPart.getFileName());
         var transactions = readTransactionsFromFile(pathToFile);
-        addTransactions(transactions, subPart.getToTs());
+        addTransactions(transactions, subPart.getFromTs(), subPart.getToTs());
     }
 
     private void readTransactionsPart(MetaInfoDto.TransactionsPart transactionsPart, String homeDir) {
@@ -63,9 +63,10 @@ public class GraphBuilder {
         getNewTransactionSubParts(transactionsPart).parallelStream().forEach(subPart -> readSubPart(subPart, transactionsPart.getBasePath(), homeDir));
     }
 
-    private void addTransactions(List<TransactionDto> transactions, Long latestTs) {
+    private void addTransactions(List<TransactionDto> transactions, Long fromTs, Long toTs) {
         transactions.forEach(accountsMetaInfo::addTransaction);
-        accountsMetaInfo.updateToTs(latestTs);
+        accountsMetaInfo.updateFromTs(fromTs);
+        accountsMetaInfo.updateToTs(toTs);
     }
 
     private List<MetaInfoDto.TransactionsPart> getNewTransactionsParts(String homeDir) throws IOException {

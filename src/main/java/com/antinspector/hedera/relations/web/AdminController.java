@@ -56,7 +56,9 @@ public class AdminController {
     }
 
     @PostMapping("/application/test")
-    public void testApplication(@RequestParam(value = "extended", defaultValue = "false") boolean extendedResponse) {
-        accountService.runTest(extendedResponse);
+    public void testApplication(@RequestParam(value = "antCount", defaultValue = "700") int antCount,
+                                @RequestParam(value = "waves", defaultValue = "1") int waves,
+                                @RequestParam(value = "extended", defaultValue = "false") boolean extendedResponse) {
+        accountService.runTest(antCount, waves, extendedResponse);
     }
 }

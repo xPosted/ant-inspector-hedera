@@ -1,6 +1,7 @@
 package com.antinspector.hedera.relations.graph;
 
 import com.antinspector.hedera.relations.dto.TransactionDto;
+import com.antinspector.hedera.relations.dto.TransferDto;
 import com.antinspector.hedera.relations.dto.TransferInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class AccountsInMemoryStorage {
         this.fromTs = new AtomicLong(fromTs);
         this.toTs = new AtomicLong(toTs);
         this.systemAccounts = systemAccounts != null ? systemAccounts : Collections.emptyList();
-        this.accountEntityMap = new ConcurrentHashMap<>(2000000);
+        this.accountEntityMap = new ConcurrentHashMap<>(1000000);
         this.accountIds = new ArrayList<>();
 
     }
@@ -62,6 +63,12 @@ public class AccountsInMemoryStorage {
     public void updateToTs(long toTs) {
         if (this.toTs.get() < toTs) {
             this.toTs.getAndSet(toTs);
+        }
+    }
+
+    public void updateFromTs(long fromTs) {
+        if (this.fromTs.get() > fromTs) {
+            this.fromTs.getAndSet(fromTs);
         }
     }
 
@@ -104,16 +111,16 @@ public class AccountsInMemoryStorage {
         return !systemAccounts.contains(senderAccId) && !systemAccounts.contains(receiverAccId);
     }
 
-    private Optional<TransferInfo> map(String transactionId, List<TransactionDto.TransferDto> transfers) {
-        var senderTransfer = transfers.stream().min(Comparator.comparingLong(TransactionDto.TransferDto::getAmount));
-        var receiverTransfer = transfers.stream().max(Comparator.comparingLong(TransactionDto.TransferDto::getAmount));
+    private Optional<TransferInfo> map(String transactionId, List<TransferDto> transfers) {
+        var senderTransfer = transfers.stream().min(Comparator.comparingLong(TransferDto::getAmount));
+        var receiverTransfer = transfers.stream().max(Comparator.comparingLong(TransferDto::getAmount));
         if (senderTransfer.isEmpty()) {
             return Optional.empty(); // No valid transfers to process
         }
         var senderAccId = senderTransfer.get().getAccount();
         var receiverAccId = receiverTransfer.get().getAccount();
         var amount = receiverTransfer.get().getAmount();
-        var tokenId = senderTransfer.map(TransactionDto.TransferDto::getTokenId).orElse(NATIVE_TOKEN_ID);
+        var tokenId = senderTransfer.map(TransferDto::getTokenId).orElse(NATIVE_TOKEN_ID);
         var transferSummary = TransactionsSummary.of(transactionId, amount);
         return Optional.of(TransferInfo.builder()
                 .sender(senderAccId)

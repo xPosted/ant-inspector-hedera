@@ -1,10 +1,8 @@
 package com.antinspector.hedera.relations.ants;
 
-import com.antinspector.hedera.relations.ants.exception.AccountNotFoundException;
 import com.antinspector.hedera.relations.graph.Account;
 import com.antinspector.hedera.relations.graph.AccountsInMemoryStorage;
 import lombok.Getter;
-import lombok.SneakyThrows;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -19,7 +17,7 @@ public class HederaAntHill {
     @Getter
     String targetAccountId;
     Map<String, Double> pheromoneAcountMap;
-    Set<List<String>> paths;
+    Set<List<String>> relations;
     int antCount;
     int waves;
     AccountsInMemoryStorage accountsMetaInfo;
@@ -31,7 +29,7 @@ public class HederaAntHill {
         this.sourceAccountId = sourceAccountId;
         this.targetAccountId = targetAccountId;
         this.pheromoneAcountMap = new HashMap<>();
-        this.paths = new HashSet<>();
+        this.relations = new HashSet<>();
         this.antCount = antCount;
         this.waves = waves;
         this.accountsMetaInfo = accountsMetaInfo;
@@ -56,7 +54,7 @@ public class HederaAntHill {
                     .parallel()
                     .forEach(HederaAnt::findPath);
         }
-        return paths;
+        return relations;
     }
 
     private HederaAnt generateAnt() {
@@ -66,7 +64,7 @@ public class HederaAntHill {
 
     public void onSuccess(HederaAnt.AntPath antPath) {
         var successfulPath = antPath.getVisitedAccounts();
-        paths.add(successfulPath);
+        relations.add(successfulPath);
         antPath.getVisitedAccounts()
                 .forEach(account -> pheromoneAcountMap.compute(account,
                         (k, v) -> {

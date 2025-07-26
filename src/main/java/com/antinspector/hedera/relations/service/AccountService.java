@@ -54,7 +54,7 @@ public class AccountService {
         return extended ? buildExtendedResult(relationIds, hill.getHillId()) : relationIds;
     }
 
-    public void runTest(boolean extendedResponse) {
+    public void runTest(int antCount, int waves, boolean extendedResponse) {
         if (graphBuilder.isStorageUpdateInProgress()) {
             throw new IllegalStateException("Graph storage is currently being updated, please try again later.");
         }
@@ -64,7 +64,7 @@ public class AccountService {
             steps++;
             var sourceAccountId = accountsInMemoryStorage.getRandomAccountId();
             var targetAccountId = accountsInMemoryStorage.getRandomAccountId();
-            var relations = findRelations(sourceAccountId, targetAccountId, 400, 2, extendedResponse);
+            var relations = findRelations(sourceAccountId, targetAccountId, antCount, waves, extendedResponse);
             if (!relations.isEmpty()) {
                 successful++;
                 System.out.println("Found " + relations.size() + " paths between " + sourceAccountId + " and " + targetAccountId);

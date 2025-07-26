@@ -17,7 +17,7 @@ public class UpdateScheduler {
     private ConfigProperties configProperties;
 
     @SneakyThrows
-    @Scheduled(fixedRate = 2, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void updateGraph() {
         var homeDir = configProperties.getConfiguration().getHomeDir();
         var fileName = configProperties.getConfiguration().getMetaFileName();

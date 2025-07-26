@@ -13,7 +13,7 @@ public class SpringConfiguration {
 
     @Bean
     public AccountsInMemoryStorage accountsMetaInfo(ConfigProperties properties) {
-        return new AccountsInMemoryStorage(0L, 0L,
+        return new AccountsInMemoryStorage(Long.MAX_VALUE, 0L,
                 properties.getSystem().getAccounts());
     }
 
