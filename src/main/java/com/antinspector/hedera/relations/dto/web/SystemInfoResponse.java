@@ -14,7 +14,7 @@ public class SystemInfoResponse {
     @Builder.Default
     public final String DESCRIPTION = "This is tool for finding relations inside Hedera accounts network. " +
             "You are welcome to set 'source' and 'target' Hedera accounts, that are typically looks like [0.0.123], " +
-            " and this tool will try to find out 'many flow' between this two accounts. This tool is based on well known " +
+            " and this tool will try to find out 'money flow' between this two accounts. This tool is based on well known " +
             "'Ant algorithm' for finding relations on graph.";
     @Builder.Default
     public final String GITHUB_URL = "https://github.com/xPosted/ant-inspector-hedera";

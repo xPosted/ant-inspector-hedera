@@ -48,9 +48,11 @@ public class AccountService {
         return HillJobStatusResponse.of(JobStatusEnum.PENDING);
     }
 
-    public Set getJobResult(String jobId, boolean extended) {
+    public List getJobResult(String jobId, boolean extended) {
         var hill = hillFactory.getHederaAntHill(jobId);
-        Set<List<String>> relationIds = hill.getRelationsSync();
+        List<List<String>> relationIds = hill.getRelationsSync().stream()
+                .sorted(Comparator.comparingInt(List::size))
+                .toList();
         return extended ? buildExtendedResult(relationIds, hill.getHillId()) : relationIds;
     }
 
@@ -90,24 +92,24 @@ public class AccountService {
                 .orElseThrow(() -> new IllegalArgumentException("Account not found: " + accountId));
     }
 
-    public Set findRelations(String sourceAccountId, String targetAccountId, int antCount, int waves, boolean extended) {
+    public List findRelations(String sourceAccountId, String targetAccountId, int antCount, int waves, boolean extended) {
         if (graphBuilder.isStorageUpdateInProgress()) {
             throw new IllegalStateException("Graph storage is currently being updated, please try again later.");
         }
         HederaAntHill antHill = hillFactory.createHill(sourceAccountId, targetAccountId, antCount, waves);
-        Set<List<String>> relationIds = antHill.findRelationsSync().stream()
+        List<List<String>> relationIds = antHill.findRelationsSync().stream()
                 .sorted(Comparator.comparingInt(List::size))
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+                .toList();
         return extended ? buildExtendedResult(relationIds, antHill.getHillId()) : relationIds;
     }
 
-    private Set<RelationResultResponse> buildExtendedResult(Set<List<String>> relations, String hillId) {
+    private List<RelationResultResponse> buildExtendedResult(List<List<String>> relations, String hillId) {
         var hill = hillFactory.getHederaAntHill(hillId);
         return relations.stream()
                 .map(this::mapToRelationItems)
                 .map(this::addTokenInfo)
                 .map(relationItems -> buildRelationResult(hill.getSourceAccountId(), hill.getTargetAccountId(), relationItems))
-                .collect(Collectors.toSet());
+                .toList();
     }
 
     private List<RelationResultResponse.RelationItem> addTokenInfo(List<RelationResultResponse.RelationItem> relationItems) {

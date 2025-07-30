@@ -8,6 +8,7 @@ import com.antinspector.hedera.relations.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController()
@@ -23,19 +24,19 @@ public class AdminController {
     }
 
     @PostMapping("/sync/ant/run")
-    public Set getRelations(@RequestParam("sourceAccountId") String sourceAccountId,
-                                          @RequestParam("targetAccountId") String targetAccountId,
-                                          @RequestParam(value = "antCount", defaultValue = "500") int antCount,
-                                          @RequestParam(value = "waves", defaultValue = "4") int waves,
-                                          @RequestParam(value = "extended", defaultValue = "false") boolean extended) {
+    public List getRelations(@RequestParam("sourceAccountId") String sourceAccountId,
+                             @RequestParam("targetAccountId") String targetAccountId,
+                             @RequestParam(value = "antCount", defaultValue = "900") int antCount,
+                             @RequestParam(value = "waves", defaultValue = "2") int waves,
+                             @RequestParam(value = "extended", defaultValue = "false") boolean extended) {
         return accountService.findRelations(sourceAccountId, targetAccountId, antCount, waves, extended);
     }
 
     @PostMapping("/async/ant/run")
     public GetRelationsAsyncResponse getRelationsAsync(@RequestParam("sourceAccountId") String sourceAccountId,
                                                        @RequestParam("targetAccountId") String targetAccountId,
-                                                       @RequestParam(value = "antCount", defaultValue = "500") int antCount,
-                                                       @RequestParam(value = "waves", defaultValue = "4") int waves) {
+                                                       @RequestParam(value = "antCount", defaultValue = "900") int antCount,
+                                                       @RequestParam(value = "waves", defaultValue = "2") int waves) {
         return accountService.findRelationAsync(sourceAccountId, targetAccountId, antCount, waves);
     }
 
@@ -45,7 +46,7 @@ public class AdminController {
     }
 
     @GetMapping("/async/ant/result")
-    public Set getJobResult(@RequestParam("hillId") String hillId,
+    public List getJobResult(@RequestParam("hillId") String hillId,
                                           @RequestParam(value = "extended", defaultValue = "false") boolean extended) {
        return accountService.getJobResult(hillId, extended);
     }
